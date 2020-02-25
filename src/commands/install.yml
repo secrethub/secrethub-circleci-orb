@@ -1,0 +1,56 @@
+description: >
+  Install the SecretHub CLI.
+parameters:
+  version:
+    type: string
+    default: "latest"
+    description: "Version of the SecretHub CLI"
+  install-path:
+    type: string
+    default: /usr/local/bin
+    description: "Path to install SecretHub CLI to"
+  shell:
+    type: string
+    default: /bin/sh
+
+steps:
+  - run:
+      name: "Install SecretHub CLI"
+      shell: << parameters.shell >>
+      command: |
+
+        # If the version is not explicitly specified then use the existing one if possible.
+        if [ "<< parameters.version >>" = "latest" ]  && command -v secrethub >/dev/null 2>&1; then
+            exit 0
+        fi
+
+        # Get the latest version.
+        VERSION="<< parameters.version >>"
+        if [ "$VERSION" = "latest" ]; then
+            VERSION=$(curl --silent --show-error --location --fail --retry 3 \
+            https://api.github.com/repos/secrethub/secrethub-cli/releases/latest | grep tag_name | sed -r 's/"tag_name": "v([^ ]+)".*/\1/' | tr -d " " )
+        fi
+
+        # Get the current platform.
+        if uname -a | grep Darwin > /dev/null 2>&1; then
+            PLATFORM=darwin
+        else
+            PLATFORM=linux
+        fi
+
+        # If the CLI is not installed or the current version of the CLI does not match the specified one, download the provided version.
+        if ! command -v secrethub >/dev/null 2>&1 || [ $(secrethub --version 2>&1 | sed -r 's/secrethub version v([^,]*).*/\1/') = "$VERSION" ]; then
+          mkdir secrethub
+          curl -sSfL https://github.com/secrethub/secrethub-cli/releases/download/v$VERSION/secrethub-v$VERSION-$PLATFORM-amd64.tar.gz | tar zxf - -C ./secrethub
+
+          # check if we can install the CLI without sudo
+          if ! mv ./secrethub/bin/secrethub << parameters.install-path >> 2>/dev/null ; then
+            sudo mv ./secrethub/bin/secrethub << parameters.install-path >>
+          fi
+          rm -rf ./secrethub
+
+          # Add executable to path if it is not there already.
+          if ! echo ":$PATH:" | grep -q  ":<<parameters.install-path>>:"; then
+            echo 'export PATH="$PATH:<<parameters.install-path>>"' >> $BASH_ENV;
+          fi
+        fi

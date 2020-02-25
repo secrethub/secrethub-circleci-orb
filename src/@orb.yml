@@ -1,0 +1,9 @@
+version: 2.1
+
+description: >
+  Orb for provisioning secrets using SecretHub.
+
+# This information will be displayed in the orb registry and is not mandatory.
+display:
+  home_url: "https://www.website.com/docs"
+  source_url: "https://www.github.com/EXAMPLE_ORG/EXAMPLE_PROJECT"
