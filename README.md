@@ -4,25 +4,25 @@ Use this orb to install the SecretHub CLI and provision secrets to your CI/CD pi
 ## Usage
 
 ```
-  version: 2.1
+version: 2.1
 
-  orbs:
-    secrethub: secrethub/cli
+orbs:
+  secrethub: secrethub/cli
 
-  jobs:
-    build:
-      docker:
-        - image: your-image
-      shell: secrethub run -- /bin/bash
-      steps:
-        - secrethub/install
-        - checkout
-        - run: ./your-app
+jobs:
+  build:
+    docker:
+      - image: your-image
+    shell: secrethub run -- /bin/bash
+    steps:
+      - secrethub/install
+      - checkout
+      - run: ./your-app
 
-  workflows:
-    your-workflow:
-      jobs:
-        - build
+workflows:
+  your-workflow:
+    jobs:
+      - build
 ```
 
 More example use-cases are provided in the `src/examples` directory.
