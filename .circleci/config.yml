@@ -4,9 +4,14 @@ orbs:
   orb-tools: circleci/orb-tools@9.0.0
 
 workflows:
-  lint:
+  validate_publish-dev:
     jobs:
       - orb-tools/lint
       - orb-tools/pack:
           requires:
             - orb-tools/lint
+      - orb-tools/publish-dev:
+          orb-name: secrethub/cli
+          publish-sha-version: false
+          requires:
+            - orb-tools/pack
