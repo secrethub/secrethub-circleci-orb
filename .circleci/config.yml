@@ -12,6 +12,7 @@ workflows:
             - orb-tools/lint
       - orb-tools/publish-dev:
           orb-name: secrethub/cli
+          context: publish-orb-dev
           publish-sha-version: false
           requires:
             - orb-tools/pack
