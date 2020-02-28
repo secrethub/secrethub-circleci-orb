@@ -20,15 +20,14 @@ steps:
       command: |
 
         # If the version is not explicitly specified then use the existing one if possible.
-        if [ "<< parameters.version >>" = "latest" ]  && command -v secrethub >/dev/null 2>&1; then
+        if [ "<< parameters.version >>" = "latest" ] && command -v secrethub >/dev/null 2>&1; then
             exit 0
         fi
 
         # Get the latest version.
         VERSION="<< parameters.version >>"
         if [ "$VERSION" = "latest" ]; then
-            VERSION=$(curl --silent --show-error --location --fail --retry 3 \
-            https://api.github.com/repos/secrethub/secrethub-cli/releases/latest | grep tag_name | sed -r 's/"tag_name": "v([^ ]+)".*/\1/' | tr -d " " )
+            VERSION=$(curl -sSfL "https://api.github.com/repos/secrethub/secrethub-cli/releases/latest" | grep tag_name | awk -F\" '{ print substr($4,2) }')
         fi
 
         # Get the current platform.
@@ -39,7 +38,7 @@ steps:
         fi
 
         # If the CLI is not installed or the current version of the CLI does not match the specified one, download the provided version.
-        if ! command -v secrethub >/dev/null 2>&1 || [ $(secrethub --version 2>&1 | sed -r 's/secrethub version v([^,]*).*/\1/') = "$VERSION" ]; then
+        if ! command -v secrethub >/dev/null 2>&1 || [[ $(secrethub --version 2>&1 | cut -d "," -f 1) != *"$VERSION" ]]; then
           mkdir secrethub
           curl -sSfL https://github.com/secrethub/secrethub-cli/releases/download/v$VERSION/secrethub-v$VERSION-$PLATFORM-amd64.tar.gz | tar zxf - -C ./secrethub
 
