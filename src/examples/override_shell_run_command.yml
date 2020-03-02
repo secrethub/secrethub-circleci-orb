@@ -1,6 +1,6 @@
 description: >
   Install the SecretHub CLI and set it as the shell on the run command level.
-  The secrets will be loaded on demand and are available during the execution of the command. 
+  The secrets will be loaded on demand and are available during the execution of the command.
   Secrets that are (accidentally) logged will be masked.
 
 usage:
