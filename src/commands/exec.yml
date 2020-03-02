@@ -15,4 +15,4 @@ parameters:
 steps:
   - install:
       version: << parameters.version >>
-  - run: secrethub run << parameters.flags >> --no-prompt -- '<< parameters.command >>'
+  - run: secrethub run << parameters.flags >> --no-prompt -- $SHELL -c '<< parameters.command >>'
