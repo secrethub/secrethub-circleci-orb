@@ -1,5 +1,5 @@
 description: >
-  Install a specific version of the SecretHub CLI.
+  Install the SecretHub CLI and use it in your command.
 
 usage:
   version: 2.1
@@ -8,14 +8,13 @@ usage:
     secrethub: secrethub/cli@v0.1.0
 
   jobs:
-    build:
-      deploy:
+    deploy:
+      docker:
         - image: cimg/base:stable
       steps:
+        - secrethub/install
         - checkout
-        - secrethub/install:
-            version: 0.35.0
-        - run: secrethub --version
+        - run: secrethub run -- ./deploy-my-app.sh
 
   workflows:
     deploy:
