@@ -8,8 +8,8 @@ usage:
     secrethub: secrethub/cli@v0.1.0
 
   jobs:
-    build:
-      deploy:
+    deploy:
+      docker:
         - image: cimg/base:stable
       steps:
         - checkout
