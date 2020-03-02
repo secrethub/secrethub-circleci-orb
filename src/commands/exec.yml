@@ -1,0 +1,18 @@
+description: Run a command with secret environment variables loaded from SecretHub
+parameters:
+  command:
+    type: string
+    description: Command to execute with secrets
+  version:
+    type: string
+    default: latest
+    description: Version of the SecretHub CLI
+  flags:
+    type: string
+    default: ''
+    description: Flags to pass to the `secrethub run` command
+
+steps:
+  - install:
+      version: << parameters.version >>
+  - run: secrethub run << parameters.flags >> -- '<< parameters.command >>'
