@@ -5,3 +5,4 @@ description: >
 
 display:
   home_url: "https://www.secrethub.io/"
+  source_url: "https://github.com/secrethub/secrethub-orb"
