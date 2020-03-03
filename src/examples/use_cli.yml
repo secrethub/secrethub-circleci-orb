@@ -8,15 +8,19 @@ usage:
     secrethub: secrethub/cli@x.y.z
 
   jobs:
-    deploy:
+    publish-docker:
       docker:
-        - image: cimg/base:stable
+        - image: circleci/buildpack-deps:stretch
       steps:
-        - secrethub/install
         - checkout
-        - run: secrethub run -- ./deploy-my-app.sh
+        - setup_remote_docker
+        - secrethub/install
+        - run: |
+            docker login -u $(secrethub read company/app/docker/username) -p $(secrethub read company/app/docker/password)
+            docker build -t company/app:${CIRCLE_SHA1:0:7} .
+            docker push company/app:${CIRCLE_SHA1:0:7}
 
   workflows:
     deploy:
       jobs:
-        - deploy
+        - publish-docker
