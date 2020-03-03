@@ -6,8 +6,8 @@ usage:
   version: 2.1
 
   orbs:
-    aws-cli: circleci/aws-cli@0.1.20
-    secrethub: secrethub/cli@v0.1.0
+    aws-cli: circleci/aws-cli@x.y.z
+    secrethub: secrethub/cli@x.y.z
 
   jobs:
     deploy:
