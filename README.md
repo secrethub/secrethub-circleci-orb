@@ -104,3 +104,12 @@ workflows:
 ```
 
 See the [src/examples](./src/examples/) directory for more examples.
+
+## Masking
+
+When using either the `secrethub/exec` orb command or the `secrethub run` shell wrapper, all secrets are automatically masked from the CI log output.
+If secrets (accidentally) get logged, they will be replaced with:
+
+```
+<redacted by SecretHub>
+```
