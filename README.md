@@ -17,7 +17,36 @@ Use this orb to load secrets from SecretHub into your CircleCI jobs.
 
 ## Usage
 
-To execute a command with secrets loaded from SecretHub, install the CLI and set it as the `shell` of the `run` command:
+To execute a command that needs secrets, replace your CircleCI `run` command with `secrethub/exec`.
+You can make secrets available to your command as environment variables by referencing their SecretHub path, prefixed by `secrethub://`:
+
+```yml
+version: 2.1
+orbs:
+  secrethub: secrethub/cli@v0.1.0
+
+jobs:
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - secrethub/exec:
+          shell: secrethub run -- /bin/bash
+          environment:
+            AWS_ACCESS_KEY_ID: secrethub://company/app/aws/access_key_id
+            AWS_SECRET_ACCESS_KEY: secrethub://company/app/aws/secret_access_key
+          command: |
+            echo "This value will be masked: $AWS_ACCESS_KEY_ID"
+            echo "This value will be masked: $AWS_SECRET_ACCESS_KEY"
+            ./deploy-my-app.sh
+workflows:
+  deploy:
+    jobs:
+      - deploy
+```
+
+You can also set the `shell` of the native CircleCI `run` command:
 
 ```yml
 version: 2.1
@@ -46,7 +75,8 @@ workflows:
       - deploy
 ```
 
-To load secrets from SecretHub into other orbs, install the CLI and set it as the `shell` of the `job`:
+You can either set it the `run` command level, on you can set it on the `job` level.
+That way you can also load secrets into other orbs:
 
 ```yml
 version: 2.1
