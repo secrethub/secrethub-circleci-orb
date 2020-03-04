@@ -6,7 +6,7 @@ parameters:
   command-name:
     type: string
     default: ''
-    description: Title of the step to be shown in the CircleCI UI
+    description: Title of the step to show in the CircleCI UI
   version:
     type: string
     default: '0.36.0'
