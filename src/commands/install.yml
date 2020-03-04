@@ -19,7 +19,7 @@ steps:
       shell: << parameters.shell >>
       command: |
 
-        # If the version is not explicitly specified then use the existing one if possible.
+        # If the version is not pinned then check if SecretHub is already installed.
         if [ "<< parameters.version >>" = "latest" ] && command -v secrethub >/dev/null 2>&1; then
             exit 0
         fi

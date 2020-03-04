@@ -1,8 +1,7 @@
 version: 2.1
 
-description: >
-  Orb for provisioning secrets using SecretHub.
+description: Load secrets from SecretHub into your CircleCI jobs.
 
 display:
-  home_url: "https://www.secrethub.io/"
+  home_url: "https://secrethub.io/"
   source_url: "https://github.com/secrethub/secrethub-orb"
