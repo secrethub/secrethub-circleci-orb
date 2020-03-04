@@ -17,7 +17,35 @@ Use this orb to load secrets from SecretHub into your CircleCI jobs.
 
 ## Usage
 
-To execute a command with secrets loaded from SecretHub, install the CLI and set it as the `shell` of the `run` command:
+To execute a command that needs secrets, replace your CircleCI `run` command with `secrethub/exec`.
+You can make secrets available to your command as environment variables by referencing their SecretHub path, prefixed by `secrethub://`:
+
+```yml
+version: 2.1
+orbs:
+  secrethub: secrethub/cli@v0.1.0
+
+jobs:
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    environment:
+      AWS_ACCESS_KEY_ID: secrethub://company/app/aws/access_key_id
+      AWS_SECRET_ACCESS_KEY: secrethub://company/app/aws/secret_access_key
+    steps:
+      - checkout
+      - secrethub/exec:
+          command: |
+            echo "This value will be masked: $AWS_ACCESS_KEY_ID"
+            echo "This value will be masked: $AWS_SECRET_ACCESS_KEY"
+            ./deploy-my-app.sh
+workflows:
+  deploy:
+    jobs:
+      - deploy
+```
+
+Alternatively, you can set the `shell` of the native CircleCI `run` command:
 
 ```yml
 version: 2.1
@@ -46,7 +74,8 @@ workflows:
       - deploy
 ```
 
-To load secrets from SecretHub into other orbs, install the CLI and set it as the `shell` of the `job`:
+You can either set the shell on the `run` command level, or you can set it on the `job` level to use it for every step in the job.
+That way you can also load secrets into other orbs:
 
 ```yml
 version: 2.1
@@ -58,14 +87,14 @@ jobs:
   deploy:
     executor: aws-cli/default
     shell: secrethub run -- /bin/bash
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: secrethub://company/app/aws/access_key_id
+      AWS_SECRET_ACCESS_KEY: secrethub://company/app/aws/secret_access_key
     steps:
       - secrethub/install
       - checkout
-      - aws-cli/setup:
-          environment:
-            AWS_DEFAULT_REGION: us-east-1
-            AWS_ACCESS_KEY_ID: secrethub://company/app/aws/access_key_id
-            AWS_SECRET_ACCESS_KEY: secrethub://company/app/aws/secret_access_key
+      - aws-cli/setup
 
 workflows:
   deploy:
@@ -74,3 +103,12 @@ workflows:
 ```
 
 See the [src/examples](./src/examples/) directory for more examples.
+
+## Masking
+
+When using either the `secrethub/exec` orb command or the `secrethub run` shell wrapper, all secrets are automatically masked from the CI log output.
+If secrets (accidentally) get logged, they will be replaced with:
+
+```
+<redacted by SecretHub>
+```
