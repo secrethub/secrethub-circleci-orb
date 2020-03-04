@@ -1,0 +1,32 @@
+description: >
+  Install the SecretHub CLI and set it as the shell on the run command level.
+  The secrets will be loaded on demand and are available during the execution of the command.
+  Secrets that are (accidentally) logged will be masked.
+
+usage:
+  version: 2.1
+
+  orbs:
+    secrethub: secrethub/cli@x.y.z
+
+  jobs:
+    deploy:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - secrethub/install
+        - checkout
+        - run:
+            shell: secrethub run -- /bin/bash
+            environment:
+              AWS_ACCESS_KEY_ID: secrethub://company/app/aws/access_key_id
+              AWS_SECRET_ACCESS_KEY: secrethub://company/app/aws/secret_access_key
+            command: |
+              echo "This value will be masked: $AWS_ACCESS_KEY_ID"
+              echo "This value will be masked: $AWS_SECRET_ACCESS_KEY"
+              ./deploy-my-app.sh
+
+  workflows:
+    deploy:
+      jobs:
+        - deploy
