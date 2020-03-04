@@ -45,7 +45,7 @@ workflows:
       - deploy
 ```
 
-You can also set the `shell` of the native CircleCI `run` command:
+Alternatively, you can set the `shell` of the native CircleCI `run` command:
 
 ```yml
 version: 2.1
@@ -74,7 +74,7 @@ workflows:
       - deploy
 ```
 
-You can either set it the `run` command level, on you can set it on the `job` level.
+You can either set the shell on the `run` command level, or you can set it on the `job` level to use it for every step in the job.
 That way you can also load secrets into other orbs:
 
 ```yml
