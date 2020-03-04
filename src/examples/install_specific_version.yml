@@ -1,0 +1,23 @@
+description: >
+  Install a specific version of the SecretHub CLI.
+
+usage:
+  version: 2.1
+
+  orbs:
+    secrethub: secrethub/cli@x.y.z
+
+  jobs:
+    deploy:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - checkout
+        - secrethub/install:
+            version: 0.35.0
+        - run: secrethub --version
+
+  workflows:
+    deploy:
+      jobs:
+        - deploy

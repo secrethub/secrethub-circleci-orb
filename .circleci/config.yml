@@ -1,0 +1,31 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@9.0.0
+
+workflows:
+  validate_publish-dev:
+    jobs:
+      - orb-tools/lint
+      - orb-tools/pack
+      - orb-tools/publish-dev:
+          name: publish-dev-sha
+          orb-name: secrethub/cli
+          context: publish-orb-dev
+          publish-alpha-version: false
+          publish-sha-version: true
+          requires:
+            - orb-tools/lint
+            - orb-tools/pack
+      - orb-tools/publish-dev:
+          name: publish-dev-latest
+          orb-name: secrethub/cli
+          context: publish-orb-dev
+          publish-alpha-version: true
+          alpha-version-ref: dev:latest
+          publish-sha-version: false
+          requires:
+            - publish-dev-sha
+          filters:
+            branches:
+              only: master
