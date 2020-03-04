@@ -3,7 +3,7 @@ parameters:
   command:
     type: string
     description: Command to execute with secrets
-  name:
+  command-name:
     type: string
     default: ''
     description: Title of the step to be shown in the CircleCI UI
@@ -20,5 +20,5 @@ steps:
   - install:
       version: << parameters.version >>
   - run:
-      name: << parameters.name >>
+      name: << parameters.command-name >>
       command: secrethub run << parameters.flags >> --no-prompt -- $SHELL -c '<< parameters.command >>'
