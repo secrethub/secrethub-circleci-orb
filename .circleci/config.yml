@@ -28,4 +28,4 @@ workflows:
             - publish-dev-sha
           filters:
             branches:
-              only: develop
+              only: master
