@@ -116,3 +116,7 @@ If secrets (accidentally) get logged, they will be replaced with:
 ```
 <redacted by SecretHub>
 ```
+
+## Authentication
+
+For your CircleCI jobs to authenticate to SecretHub and decrypt the secrets they need, [create a SecretHub service account](https://secrethub.io/docs/reference/cli/service/), give it [read access](https://secrethub.io/docs/reference/cli/acl/) to the secrets it needs, and configure the credential as `SECRETHUB_CREDENTIAL` in your CircleCI project settings or Context environment variables.
