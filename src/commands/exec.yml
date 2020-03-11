@@ -21,4 +21,6 @@ steps:
       version: << parameters.version >>
   - run:
       name: << parameters.command-name >>
-      command: secrethub run << parameters.flags >> --no-prompt -- $SHELL -c '<< parameters.command >>'
+      command: secrethub run << parameters.flags >> -- $SHELL -c '<< parameters.command >>'
+      environment:
+        SECRETHUB_RUN_NO_PROMPT: true
