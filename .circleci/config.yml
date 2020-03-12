@@ -79,3 +79,19 @@ workflows:
     jobs:
       - test-integration-exec
       - test-integration-other-orb
+      - orb-tools/dev-promote-prod-from-git-tag:
+          name: publish-to-registry
+          orb-name: secrethub/cli
+          context: publish-orb-prd
+          add-pr-comment: false
+          major-release-tag-regex: '^major-v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$'
+          minor-release-tag-regex: '^minor-v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$'
+          patch-release-tag-regex: '^patch-v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$'
+          requires:
+            - test-integration-exec
+            - test-integration-other-orb
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^(major|minor|patch)-v\d+\.\d+\.\d+$/
