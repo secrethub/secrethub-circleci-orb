@@ -10,7 +10,7 @@ usage:
   jobs:
     publish-docker:
       docker:
-        - image: circleci/buildpack-deps:stretch
+        - image: cimg/base:stable
       steps:
         - checkout
         - setup_remote_docker
