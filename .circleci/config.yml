@@ -24,6 +24,7 @@ jobs:
     steps:
       - checkout
       - secrethub/exec:
+          step-name: Validate if secrets have been provisioned
           command: |
             set -e
             : ${DOCKER_USERNAME:?DOCKER_USERNAME is not set}
