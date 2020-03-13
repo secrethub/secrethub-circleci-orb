@@ -19,16 +19,16 @@ jobs:
     docker:
       - image: cimg/base:stable
     environment:
-      DOCKER_USERNAME: secrethub://company/app/docker/username
-      DOCKER_PASSWORD: secrethub://company/app/docker/password
+      SECRET: secrethub://company/app/secret
     steps:
       - checkout
       - secrethub/exec:
-          step-name: Validate if secrets have been provisioned
+          step-name: Validate if secret is set correctly
           command: |
-            set -e
-            : ${DOCKER_USERNAME:?DOCKER_USERNAME is not set}
-            : ${DOCKER_PASSWORD:?DOCKER_PASSWORD is not set}
+            if [ $SECRET != "DDXLKkBhprQgW7w7OFsM8y" ]; then
+              echo "secret is not correctly set"
+              exit 1
+            fi
   test-integration-other-orb:
     executor: aws-cli/default
     shell: secrethub run -- /bin/bash
