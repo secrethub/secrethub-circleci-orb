@@ -14,6 +14,12 @@ parameters:
     type: string
     default: "dev:latest"
 
+orb_promotion_filters: &orb_promotion_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
 jobs:
   test-integration-exec:
     docker:
@@ -74,11 +80,18 @@ workflows:
           requires:
             - publish-dev-sha
 
-  test-integration_publish-to-registry:
+  test-integration:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       - test-integration-exec
       - test-integration-other-orb
+
+  publish-to-registry:
+    unless: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - approve:
+          type: approval
+          filters: *orb_promotion_filters
       - orb-tools/dev-promote-prod-from-git-tag:
           name: publish-to-registry
           orb-name: secrethub/cli
@@ -88,10 +101,5 @@ workflows:
           minor-release-tag-regex: '^v[0-9]*\.[1-9][0-9]*\.0+$'
           patch-release-tag-regex: '^v[0-9]*\.[0-9]*\.[1-9][0-9]*$'
           requires:
-            - test-integration-exec
-            - test-integration-other-orb
-          filters:
-            branches:
-              only: master
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+            - approve
+          filters: *orb_promotion_filters
