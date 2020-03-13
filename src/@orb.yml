@@ -4,4 +4,4 @@ description: Load secrets from SecretHub into your CircleCI jobs.
 
 display:
   home_url: "https://secrethub.io/"
-  source_url: "https://github.com/secrethub/secrethub-orb"
+  source_url: "https://github.com/secrethub/secrethub-circleci-orb"
