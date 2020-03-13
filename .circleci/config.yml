@@ -2,9 +2,48 @@ version: 2.1
 
 orbs:
   orb-tools: circleci/orb-tools@9.0.0
+  # Integration tests
+  secrethub: secrethub/cli@<<pipeline.parameters.dev-orb-version>>
+  aws-cli: circleci/aws-cli@0.1.22
+
+parameters:
+  run-integration-tests:
+    type: boolean
+    default: false
+  dev-orb-version:
+    type: string
+    default: "dev:latest"
+
+jobs:
+  test-integration-exec:
+    docker:
+      - image: cimg/base:stable
+    environment:
+      SECRET: secrethub://company/app/secret
+    steps:
+      - checkout
+      - secrethub/exec:
+          step-name: Validate if secret is set correctly
+          command: |
+            if [ $SECRET != "DDXLKkBhprQgW7w7OFsM8y" ]; then
+              echo "secret is not correctly set"
+              exit 1
+            fi
+  test-integration-other-orb:
+    executor: aws-cli/default
+    shell: secrethub run -- /bin/bash
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: secrethub://company/app/aws/access_key_id
+      AWS_SECRET_ACCESS_KEY: secrethub://company/app/aws/secret_access_key
+    steps:
+      - secrethub/install
+      - checkout
+      - aws-cli/setup
 
 workflows:
   validate_publish-dev:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/lint
       - orb-tools/pack
@@ -29,3 +68,30 @@ workflows:
           filters:
             branches:
               only: master
+      - orb-tools/trigger-integration-tests-workflow:
+          name: trigger-integration-tests
+          context: publish-orb-dev
+          requires:
+            - publish-dev-sha
+
+  test-integration_publish-to-registry:
+    when: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - test-integration-exec
+      - test-integration-other-orb
+      - orb-tools/dev-promote-prod-from-git-tag:
+          name: publish-to-registry
+          orb-name: secrethub/cli
+          context: publish-orb-prd
+          add-pr-comment: false
+          major-release-tag-regex: '^v[1-9][0-9]*\.0\.0+$'
+          minor-release-tag-regex: '^v[0-9]*\.[1-9][0-9]*\.0+$'
+          patch-release-tag-regex: '^v[0-9]*\.[0-9]*\.[1-9][0-9]*$'
+          requires:
+            - test-integration-exec
+            - test-integration-other-orb
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
