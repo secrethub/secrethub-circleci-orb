@@ -1,6 +1,10 @@
 version: 2.1
 
-description: Load secrets from SecretHub into your CircleCI jobs.
+description: |
+  Load secrets from SecretHub into your CircleCI jobs.
+  
+  To authenticate, create a SecretHub service account with read access and configure the credential as "SECRETHUB_CREDENTIAL" in your CircleCI project settings or Context environment variables.
+  More info: https://secrethub.io/docs/reference/cli/service/
 
 display:
   home_url: "https://secrethub.io/"
