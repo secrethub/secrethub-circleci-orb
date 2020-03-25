@@ -12,6 +12,7 @@ parameters:
   shell:
     type: string
     default: /bin/sh
+    description: "The shell used to run the install script"
 
 steps:
   - run:
