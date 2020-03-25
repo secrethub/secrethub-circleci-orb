@@ -8,7 +8,7 @@
   </a>
 </p>
 <h1 align="center">
-  <i>CircleCI Orb</i>
+  <i>CircleCI Orb <img src="https://secrethub.io/img/integrations/circleci/partner-badge.png" alt="Partner badge" width="60" /></i>
 </h1>
 
 [![CircleCI](https://circleci.com/gh/secrethub/secrethub-circleci-orb.svg?style=shield)](https://circleci.com/gh/secrethub/secrethub-circleci-orb)
