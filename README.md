@@ -1,23 +1,28 @@
 <p align="center">
-  <a href="https://circleci.com">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Circleci-icon-logo.svg" alt="CircleCI" width="110">
-  </a>
-  <img width="50px"/>
-  <a href="https://secrethub.io">
-    <img src="https://secrethub.io/img/secrethub-logo-shield.svg" alt="SecretHub" width="96">
+  <img src="https://secrethub.io/img/integrations/circleci/github-banner.png?v1" alt="CircleCI + SecretHub" width="412">
   </a>
 </p>
-<h1 align="center">
-  <i>CircleCI Orb <img src="https://secrethub.io/img/integrations/circleci/partner-badge.png" alt="Partner badge" width="60" /></i>
+<br/>
+
+<p align="center">
+  <a href="https://secrethub.io/integrations/circleci/">
+    <img alt="Learn More" src="https://secrethub.io/img/buttons/github/learn-more.png?v1" height="28" />
+  </a>
+  <a href="https://secrethub.io/docs/guides/circleci/">
+    <img alt="View Docs" src="https://secrethub.io/img/buttons/github/view-docs.png?v1" height="28" />
+  </a>
+</p>
+<br/>
+
+<h1>
+  CircleCI Orb <img src="https://secrethub.io/img/integrations/circleci/partner-badge.png" alt="Partner badge" width="60" />
 </h1>
 
 [![CircleCI](https://circleci.com/gh/secrethub/secrethub-circleci-orb.svg?style=shield)](https://circleci.com/gh/secrethub/secrethub-circleci-orb)
 [![Version]( https://img.shields.io/github/release/secrethub/secrethub-circleci-orb.svg)](https://github.com/secrethub/secrethub-circleci-orb/releases/latest)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-7289da.svg?logo=discord)](https://discord.gg/NWmxVeb)
 
-> [SecretHub](https://secrethub.io) is an end-to-end encrypted secret management service that helps developers keep database passwords, API keys, and other secrets out of source code.
-
-Use this orb to load secrets from SecretHub into your CircleCI jobs.
+Securely load secrets into CircleCI jobs and sync them automatically.
 
 ## Usage
 
