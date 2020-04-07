@@ -18,7 +18,7 @@
 [![Version]( https://img.shields.io/github/release/secrethub/secrethub-circleci-orb.svg)](https://github.com/secrethub/secrethub-circleci-orb/releases/latest)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-7289da.svg?logo=discord)](https://discord.gg/NWmxVeb)
 
-Securely load secrets into CircleCI jobs and sync them automatically.
+No more copy-pasting sensitive values into a GUI. Securely load secrets into CircleCI and sync them automatically.
 
 ## Usage
 
