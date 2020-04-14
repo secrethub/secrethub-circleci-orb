@@ -19,6 +19,8 @@
 
 No more copy-pasting sensitive values into a GUI. Securely load secrets into CircleCI and sync them automatically.
 
+This Orb is officially supported and actively maintained by SecretHub, but community contributions are very welcome. 
+
 ## Usage
 
 To execute a command that needs secrets, replace your CircleCI `run` command with `secrethub/exec`.
