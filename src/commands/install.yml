@@ -32,15 +32,15 @@ steps:
 
         # Detect Architecture
         ARCH=amd64
-        if [ $(getconf LONG_BIT) == 32 ]; then
+        if [ $(getconf LONG_BIT) = 32 ]; then
             ARCH=386
         fi
 
         # Detect OS
         UNAME=$(uname)
-        if [[ "$UNAME" == "Darwin" ]]; then
+        if [ "$UNAME" = "Darwin" ]; then
           OS=darwin
-        elif [[ $UNAME == "Linux" ]]; then
+        elif [ "$UNAME" = "Linux" ]; then
             OS=linux
         else
             echo -e "${ERROR_COLOR}Cannot determine OS type. Exiting...${NO_COLOR}"
@@ -49,8 +49,8 @@ steps:
 
         # Make sure we have root priviliges.
         SUDO=""
-        if [[ $(id -u) -ne 0 ]]; then
-            if ! [[ $(command -v sudo) ]]; then
+        if [ $(id -u) -ne 0 ]; then
+            if ! [ $(command -v sudo) ]; then
                 echo -e "${ERROR_COLOR}Installer requires root privileges. Please run this script as root.${NO_COLOR}"
                 exit;
             fi
@@ -62,7 +62,7 @@ steps:
         $SUDO mkdir -p /usr/local/secrethub/bin
 
         # Retrieve latest version
-        if [[ -n "${SECRETHUB_CLI_VERSION}" ]]; then
+        if [ -n "${SECRETHUB_CLI_VERSION}" ]; then
           VERSION=v${SECRETHUB_CLI_VERSION}
         else
           echo -e "${OK_COLOR}==> Retrieving latest version${NO_COLOR}"
@@ -73,7 +73,7 @@ steps:
         ARCHIVE_NAME=secrethub-$VERSION-$OS-$ARCH
         LINK_TAR=https://github.com/secrethub/secrethub-cli/releases/download/$VERSION/$ARCHIVE_NAME.tar.gz
 
-        curl -fsSL $LINK_TAR | $SUDO tar -xz  -C /usr/local/secrethub;
+        curl -fsSL $LINK_TAR | $SUDO tar -xz -C /usr/local/secrethub;
 
         # symlink in the PATH
         $SUDO ln -sf /usr/local/secrethub/bin/secrethub /usr/local/bin/secrethub
