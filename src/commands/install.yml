@@ -53,11 +53,6 @@ steps:
                 exit;
             fi
 
-            if ! sudo -n true 2>/dev/null; then
-                echo -e "${OK_COLOR}==> I need root privileges to continue, please type in your password.${NO_COLOR}"
-                sudo -v
-            fi
-
             SUDO="sudo"
         fi
 
