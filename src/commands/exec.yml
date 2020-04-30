@@ -24,3 +24,4 @@ steps:
       command: secrethub run << parameters.flags >> -- $SHELL -c '<< parameters.command >>'
       environment:
         SECRETHUB_RUN_NO_PROMPT: true
+        SECRETHUB_APP_INFO_NAME: secrethub-circleci-orb
