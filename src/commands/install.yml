@@ -18,39 +18,68 @@ steps:
   - run:
       name: "Install SecretHub CLI"
       shell: << parameters.shell >>
+      environment:
+        SECRETHUB_CLI_VERSION: << parameters.version >>
       command: |
 
-        # If the version is not pinned then check if SecretHub is already installed.
-        if [ "<< parameters.version >>" = "latest" ] && command -v secrethub >/dev/null 2>&1; then
-            exit 0
+        set -e
+
+        # Colors
+        NO_COLOR="\033[0m"
+        OK_COLOR="\033[32;01m"
+        ERROR_COLOR="\033[31;01m"
+        WARN_COLOR="\033[33;01m"
+
+        # Detect Architecture
+        ARCH=amd64
+        if [ $(getconf LONG_BIT) = 32 ]; then
+            ARCH=386
         fi
 
-        # Get the latest version.
-        VERSION="<< parameters.version >>"
-        if [ "$VERSION" = "latest" ]; then
-            VERSION=$(curl -sSfL "https://api.github.com/repos/secrethub/secrethub-cli/releases/latest" | grep tag_name | awk -F\" '{ print substr($4,2) }')
-        fi
-
-        # Get the current platform.
-        if uname -a | grep Darwin > /dev/null 2>&1; then
-            PLATFORM=darwin
+        # Detect OS
+        UNAME=$(uname)
+        if [ "$UNAME" = "Darwin" ]; then
+          OS=darwin
+        elif [ "$UNAME" = "Linux" ]; then
+            OS=linux
         else
-            PLATFORM=linux
+            echo -e "${ERROR_COLOR}Cannot determine OS type. Exiting...${NO_COLOR}"
+            exit;
         fi
 
-        # If the CLI is not installed or the current version of the CLI does not match the specified one, download the provided version.
-        if ! command -v secrethub >/dev/null 2>&1 || [[ $(secrethub --version 2>&1 | cut -d "," -f 1) != *"$VERSION" ]]; then
-          mkdir secrethub
-          curl -sSfL https://github.com/secrethub/secrethub-cli/releases/download/v$VERSION/secrethub-v$VERSION-$PLATFORM-amd64.tar.gz | tar zxf - -C ./secrethub
+        # Make sure we have root priviliges.
+        SUDO=""
+        if [ $(id -u) -ne 0 ]; then
+            if ! [ $(command -v sudo) ]; then
+                echo -e "${ERROR_COLOR}Installer requires root privileges. Please run this script as root.${NO_COLOR}"
+                exit;
+            fi
 
-          # check if we can install the CLI without sudo
-          if ! mv ./secrethub/bin/secrethub << parameters.path >> 2>/dev/null ; then
-            sudo mv ./secrethub/bin/secrethub << parameters.path >>
-          fi
-          rm -rf ./secrethub
-
-          # Add executable to path if it is not there already.
-          if ! echo ":$PATH:" | grep -q  ":<<parameters.path>>:"; then
-            echo 'export PATH="$PATH:<<parameters.path>>"' >> $BASH_ENV;
-          fi
+            SUDO="sudo"
         fi
+
+        echo -e "${OK_COLOR}==> Creating directories${NO_COLOR}"
+        $SUDO mkdir -p /usr/local/secrethub/bin
+
+        if [ "${SECRETHUB_CLI_VERSION:-latest}" != "latest" ]; then
+          VERSION=v${SECRETHUB_CLI_VERSION}
+        else
+          # Retrieve latest version
+          echo -e "${OK_COLOR}==> Retrieving latest version${NO_COLOR}"
+          VERSION=$(curl --silent "https://api.github.com/repos/secrethub/secrethub-cli/releases/latest" | grep tag_name | awk -F\" '{ print $4 }')
+        fi
+
+        # Exit if version is already installed
+        if command -v secrethub >/dev/null 2>&1 && secrethub --version 2>&1 | cut -d "," -f 1 | grep -q "$(echo $VERSION | cut -c 2-)$"; then
+          echo -e "${OK_COLOR}==> Version ${VERSION} is already installed${NO_COLOR}"
+          exit 0
+        fi
+
+        echo -e "${OK_COLOR}==> Downloading version ${VERSION}${NO_COLOR}"
+        ARCHIVE_NAME=secrethub-$VERSION-$OS-$ARCH
+        LINK_TAR=https://github.com/secrethub/secrethub-cli/releases/download/$VERSION/$ARCHIVE_NAME.tar.gz
+
+        curl -fsSL $LINK_TAR | $SUDO tar -xz -C /usr/local/secrethub;
+
+        # symlink in the PATH
+        $SUDO ln -sf /usr/local/secrethub/bin/secrethub /usr/local/bin/secrethub
