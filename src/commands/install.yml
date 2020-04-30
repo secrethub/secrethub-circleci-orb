@@ -61,12 +61,18 @@ steps:
         echo -e "${OK_COLOR}==> Creating directories${NO_COLOR}"
         $SUDO mkdir -p /usr/local/secrethub/bin
 
-        # Retrieve latest version
-        if [ -n "${SECRETHUB_CLI_VERSION}" ]; then
+        if [ "${SECRETHUB_CLI_VERSION:-latest}" != "latest" ]; then
           VERSION=v${SECRETHUB_CLI_VERSION}
         else
+          # Retrieve latest version
           echo -e "${OK_COLOR}==> Retrieving latest version${NO_COLOR}"
           VERSION=$(curl --silent "https://api.github.com/repos/secrethub/secrethub-cli/releases/latest" | grep tag_name | awk -F\" '{ print $4 }')
+        fi
+
+        # Exit if version is already installed
+        if command -v secrethub >/dev/null 2>&1 && secrethub --version 2>&1 | cut -d "," -f 1 | grep -q "$(echo $VERSION | cut -c 2-)$"; then
+          echo -e "${OK_COLOR}==> Version ${VERSION} is already installed${NO_COLOR}"
+          exit 0
         fi
 
         echo -e "${OK_COLOR}==> Downloading version ${VERSION}${NO_COLOR}"
