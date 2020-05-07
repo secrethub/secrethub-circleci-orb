@@ -9,7 +9,7 @@ parameters:
     description: Title of the step to show in the CircleCI UI
   version:
     type: string
-    default: '0.36.0'
+    default: '0.38.0'
     description: Version of the SecretHub CLI
   flags:
     type: string
