@@ -29,7 +29,7 @@ You can make secrets available to your command as environment variables by refer
 ```yml
 version: 2.1
 orbs:
-  secrethub: secrethub/cli@1.0.0
+  secrethub: secrethub/cli@1.0.1
 
 jobs:
   deploy:
@@ -56,7 +56,7 @@ Alternatively, you can set the `shell` of the native CircleCI `run` command:
 ```yml
 version: 2.1
 orbs:
-  secrethub: secrethub/cli@1.0.0
+  secrethub: secrethub/cli@1.0.1
 
 jobs:
   deploy:
@@ -87,7 +87,7 @@ That way you can also load secrets into other orbs:
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@0.1.20
-  secrethub: secrethub/cli@1.0.0
+  secrethub: secrethub/cli@1.0.1
 
 jobs:
   deploy:
