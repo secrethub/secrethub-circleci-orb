@@ -10,9 +10,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Bump version
+      - name: Bump version in orb command
         uses: florisvdg/action-version-bump@v0.1.0
         with:
           sed: 's/\(SECRETHUB_APP_INFO_VERSION: \).*/\1$VERSION/g'
           file: src/commands/exec.yml
+          author_email: bender.github@secrethub.io
+      - name: Bump version in README examples
+        uses: florisvdg/action-version-bump@v0.1.0
+        with:
+          sed: 's/\(secrethub: secrethub\/cli@\).*/\1$VERSION/g'
+          file: README.md
           author_email: bender.github@secrethub.io
