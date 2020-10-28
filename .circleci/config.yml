@@ -6,13 +6,17 @@ orbs:
   secrethub: secrethub/cli@<<pipeline.parameters.dev-orb-version>>
   aws-cli: circleci/aws-cli@0.1.22
 
+# To run the integration tests, the orb-tools/trigger-integration-tests-workflow job will
+# override these parameters with the following values:
+#   run-integration-tests: true
+#   dev-orb-version: "dev:${CIRCLE_SHA1:0:7}"
 parameters:
   run-integration-tests:
     type: boolean
     default: false
   dev-orb-version:
     type: string
-    default: "dev:latest"
+    default: 1.0.1
 
 orb_promotion_filters: &orb_promotion_filters
   branches:
