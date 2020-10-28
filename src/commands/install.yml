@@ -16,7 +16,7 @@ parameters:
 
 steps:
   - run:
-      name: "Install SecretHub CLI"
+      name: "Ensure SecretHub CLI is installed"
       shell: << parameters.shell >>
       environment:
         SECRETHUB_CLI_VERSION: << parameters.version >>
