@@ -81,6 +81,22 @@ workflows:
       - test-integration-exec
       - test-integration-other-orb
 
+  # Republish the dev:alpha orb every month to ensure new pipelines don't get rejected due to expired dev orbs.
+  keep-dev-orb:
+    triggers:
+      - schedule:
+          cron: "0 0 1 * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - orb-tools/publish-dev:
+          orb-name: secrethub/cli
+          context: publish-orb-dev
+          publish-alpha-version: true
+          publish-sha-version: false
+
   publish-to-registry:
     unless: << pipeline.parameters.run-integration-tests >>
     jobs:
