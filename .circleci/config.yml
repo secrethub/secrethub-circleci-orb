@@ -15,12 +15,11 @@ parameters:
       The 'orb-tools/trigger-integration-tests-workflow' job kicks off the integration tests, by triggering a new workflow with this parameter set to 'true'.
   dev-orb-version:
     type: string
-    default: 1.0.1
+    default: "dev:alpha"
     description: >
-      The SecretHub dev orb version to use in the integration tests.
-      Default value has to be (any) stable prod version, because pipelines with dev orbs older than 90 days will get rejected.
-      The 'orb-tools/trigger-integration-tests-workflow' job will override this parameter with "dev:${CIRCLE_SHA1:0:7}",
-      so that the integration tests are always ran with the latest orb code, instead of the stable prod version.
+      The SecretHub dev orb version to use in the integration tests. Default is "dev:alpha" for the initial config validation to pass.
+      The 'orb-tools/trigger-integration-tests-workflow' job will override this parameter with "dev:${CIRCLE_SHA1:0:7}", so that the integration tests
+      are always ran with the correct orb code. The scheduled 'keep-dev-orb' workflow will make sure the dev:alpha orb doesn't expire.
 
 orb_promotion_filters: &orb_promotion_filters
   branches:
