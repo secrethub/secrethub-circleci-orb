@@ -19,7 +19,7 @@ steps:
   - run:
       name: Load secret << parameters.var-name >>
       command: |
-        random_heredoc_identifier=$(cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)
+        random_heredoc_identifier=$(cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1) || true
         printf 'export << parameters.var-name >>=$(cat \<<' >> $BASH_ENV
         printf "${random_heredoc_identifier}\n" >> $BASH_ENV
         secrethub read << parameters.secret-path >> >> $BASH_ENV
