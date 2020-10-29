@@ -62,31 +62,18 @@ workflows:
       - orb-tools/lint
       - orb-tools/pack
       - orb-tools/publish-dev:
-          name: publish-dev-sha
           orb-name: secrethub/cli
           context: publish-orb-dev
-          publish-alpha-version: false
+          publish-alpha-version: true
           publish-sha-version: true
           requires:
             - orb-tools/lint
             - orb-tools/pack
-      - orb-tools/publish-dev:
-          name: publish-dev-latest
-          orb-name: secrethub/cli
-          context: publish-orb-dev
-          publish-alpha-version: true
-          alpha-version-ref: dev:latest
-          publish-sha-version: false
-          requires:
-            - publish-dev-sha
-          filters:
-            branches:
-              only: master
       - orb-tools/trigger-integration-tests-workflow:
           name: trigger-integration-tests
           context: publish-orb-dev
           requires:
-            - publish-dev-sha
+            - orb-tools/publish-dev
 
   test-integration:
     when: << pipeline.parameters.run-integration-tests >>
