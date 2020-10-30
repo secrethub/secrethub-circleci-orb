@@ -1,0 +1,30 @@
+description: >
+  Load a secret and make it available as an environment variable for next steps in the job.
+  Note: Unlike the secrethub/exec command, secrethub/env-export does NOT mask secrets from the logs.
+parameters:
+  var-name:
+    type: string
+    description: Name of the environment variable to populate with the secret
+  secret-path:
+    type: string
+    description: Path where the secret is stored on SecretHub
+  version:
+    type: string
+    default: '0.38.0'
+    description: Version of the SecretHub CLI
+
+steps:
+  - install:
+      version: << parameters.version >>
+  - run:
+      name: Load secret << parameters.var-name >>
+      command: |
+        random_heredoc_identifier=$(cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1) || true
+        printf 'export << parameters.var-name >>=$(cat \<<' >> $BASH_ENV
+        printf "${random_heredoc_identifier}\n" >> $BASH_ENV
+        secrethub read << parameters.secret-path >> >> $BASH_ENV
+        printf "${random_heredoc_identifier}\n)\n" >> $BASH_ENV
+      environment:
+        SECRETHUB_APP_INFO_NAME: secrethub-circleci-orb
+        # Version is automatically bumped on release branches
+        SECRETHUB_APP_INFO_VERSION: 1.0.1

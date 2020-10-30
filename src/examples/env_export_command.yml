@@ -1,0 +1,25 @@
+description: >
+  Use the secrethub/env-export command to load a secret and make it available as an environment variable for next steps in the job.
+  This is useful for providing an orb job with secrets as pre-step to the job.
+
+  Note: Unlike the secrethub/exec command, the secrethub/env-export does NOT mask secrets from the logs.
+
+usage:
+  version: 2.1
+
+  orbs:
+    secrethub: secrethub/cli@x.y.z
+    docker: circleci/docker@x.y.z
+
+  workflows:
+    publish:
+      jobs:
+        - docker/publish:
+            image: company/app
+            pre-steps:
+              - secrethub/export-env:
+                  var-name: DOCKER_LOGIN
+                  secret-path: company/app/docker/username
+              - secrethub/env-export:
+                  var-name: DOCKER_PASSWORD
+                  secret-path: company/app/docker/password
