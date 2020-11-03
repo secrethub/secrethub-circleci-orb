@@ -26,4 +26,4 @@ steps:
         SECRETHUB_RUN_NO_PROMPT: true
         SECRETHUB_APP_INFO_NAME: secrethub-circleci-orb
         # Version is automatically bumped on release branches
-        SECRETHUB_APP_INFO_VERSION: 1.0.1
+        SECRETHUB_APP_INFO_VERSION: 1.1.0
