@@ -120,11 +120,14 @@ workflows:
               only:
                 - master
     jobs:
+      - orb-tools/pack
       - orb-tools/publish-dev:
           orb-name: secrethub/cli
           context: publish-orb-dev
           publish-alpha-version: true
           publish-sha-version: false
+          requires:
+            - orb-tools/pack
 
   publish-to-registry:
     unless: << pipeline.parameters.run-integration-tests >>
