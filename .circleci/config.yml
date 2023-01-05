@@ -88,7 +88,6 @@ workflows:
     jobs:
       - approve:
           type: approval
-          filters: *orb_promotion_filters
       - orb-tools/dev-promote-prod-from-git-tag:
           name: publish-to-registry
           orb-name: secrethub/cli
@@ -99,4 +98,3 @@ workflows:
           patch-release-tag-regex: '^v[0-9]*\.[0-9]*\.[1-9][0-9]*$'
           requires:
             - approve
-          filters: *orb_promotion_filters
