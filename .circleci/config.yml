@@ -84,10 +84,57 @@ jobs:
             fi
 
 workflows:
+  validate_publish-dev:
+    unless: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - orb-tools/lint
+      - orb-tools/pack
+      - orb-tools/publish-dev:
+          orb-name: secrethub/cli
+          context:  publish-orb-prd
+          publish-alpha-version: true
+          publish-sha-version: true
+          requires:
+            - orb-tools/lint
+            - orb-tools/pack
+      - orb-tools/trigger-integration-tests-workflow:
+          name: trigger-integration-tests
+          context:  publish-orb-prd
+          requires:
+            - orb-tools/publish-dev
+
+  test-integration:
+    when: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - test-integration-exec
+      - test-integration-other-orb
+      - test-integration-env-export
+
+  # Republish the dev:alpha orb every month to ensure new pipelines don't get rejected due to expired dev orbs.
+  keep-dev-orb:
+    triggers:
+      - schedule:
+          cron: "0 0 1 * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - orb-tools/pack
+      - orb-tools/publish-dev:
+          orb-name: secrethub/cli
+          context:  publish-orb-prd
+          publish-alpha-version: true
+          publish-sha-version: false
+          requires:
+            - orb-tools/pack
+
   publish-to-registry:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - approve:
           type: approval
+          filters: *orb_promotion_filters
       - orb-tools/dev-promote-prod-from-git-tag:
           name: publish-to-registry
           orb-name: secrethub/cli
@@ -98,3 +145,4 @@ workflows:
           patch-release-tag-regex: '^v[0-9]*\.[0-9]*\.[1-9][0-9]*$'
           requires:
             - approve
+          filters: *orb_promotion_filters
