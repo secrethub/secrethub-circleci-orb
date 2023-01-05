@@ -91,7 +91,7 @@ workflows:
       - orb-tools/pack
       - orb-tools/publish-dev:
           orb-name: secrethub/cli
-          context:  publish-orb-prd
+          context:  orb-publishing
           publish-alpha-version: true
           publish-sha-version: true
           requires:
@@ -99,7 +99,7 @@ workflows:
             - orb-tools/pack
       - orb-tools/trigger-integration-tests-workflow:
           name: trigger-integration-tests
-          context:  publish-orb-prd
+          context:  orb-publishing
           requires:
             - orb-tools/publish-dev
 
@@ -123,7 +123,7 @@ workflows:
       - orb-tools/pack
       - orb-tools/publish-dev:
           orb-name: secrethub/cli
-          context:  publish-orb-prd
+          context:  orb-publishing
           publish-alpha-version: true
           publish-sha-version: false
           requires:
